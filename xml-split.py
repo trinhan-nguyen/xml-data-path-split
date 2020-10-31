@@ -1,12 +1,12 @@
 import fileinput
 
-def containDataPath(line):
+def containPathData(line):
     line = line.strip()
     if ("android:pathData" in line):
         return True
     return False
 
-def extractDataPath(line):
+def extractPathData(line):
     return line.split("\"", 1)[1].split("\"", 1)[0]
 
 def getFirstHalf(line):
@@ -16,18 +16,18 @@ def getSecondHalf(line):
     return line.split("\"", 1)[1].split("\"", 1)[1]
 
 def main():
-    dataPath = ""
+    pathData = ""
     upperTemplate = ""
     lowerTemplate = ""
-    foundDataPath = False
+    foundPathData = False
     for line in fileinput.input():
-        if (containDataPath(line)):
-            foundDataPath = True
-            dataPath = extractDataPath(line)
+        if (containPathData(line)):
+            foundPathData = True
+            pathData = extractPathData(line)
             upperTemplate += getFirstHalf(line)
             lowerTemplate += getSecondHalf(line)
         else:
-            if foundDataPath:
+            if foundPathData:
                 lowerTemplate += line
             else:
                 upperTemplate += line
