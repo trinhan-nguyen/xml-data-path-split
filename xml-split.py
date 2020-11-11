@@ -1,5 +1,7 @@
 import fileinput
 
+DELIMITER = "M"
+
 def containPathData(line):
     line = line.strip()
     if ("android:pathData" in line):
@@ -10,13 +12,22 @@ def extractPathData(line):
     return line.split("\"", 1)[1].split("\"", 1)[0]
 
 def getFirstHalf(line):
-    return line.split("\"", 1)[0]
+    return line.split("\"", 1)[0] + "\""
 
 def getSecondHalf(line):
-    return line.split("\"", 1)[1].split("\"", 1)[1]
+    return "\"" + line.split("\"", 1)[1].split("\"", 1)[1]
 
 def splitPathData(pathData):
-    return pathData.split("M")
+    paths = pathData.split(DELIMITER)
+    for i in range(1, len(paths)):
+        if paths[i]:
+            paths[i] = DELIMITER + paths[i]
+    return paths
+
+def postProcess(paths, lower, upper):
+    for i in range(len(paths)):
+        paths[i] = upper + paths[i] + lower
+    return paths
 
 def writeToFile(content):
     outputFile = open('output', 'w')
@@ -42,8 +53,9 @@ def main():
                 lowerTemplate += line
             else:
                 upperTemplate += line
-    writeToFile(paths)
 
+    content = postProcess(paths, lowerTemplate, upperTemplate)
+    writeToFile(content)
 
 main()
 
